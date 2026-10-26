@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="light" />
+		<title>Dashboard de potabilidad del agua</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						fontFamily: {
+							sans: ['"IBM Plex Sans"', "system-ui", "sans-serif"],
+							mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
+						},
+						colors: {
+							fondo: "#F5F7F8",
+							tinta: "#10212B",
+							texto: "#34454F",
+							suave: "#4A5A64",
+							linea: "#D9E0E4",
+							lineaclara: "#EEF2F4",
+							agua: { DEFAULT: "#1F5C99", oscuro: "#123E6B", claro: "#D6E3F0" },
+							ocre: {
+								DEFAULT: "#C8692B",
+								oscuro: "#7A3610",
+								texto: "#A4511A",
+								claro: "#F3DCCB",
+							},
+						},
+					},
+				},
+			};
+		</script>
+	</head>
+	<body class="m-0 bg-fondo font-sans text-tinta antialiased">
+		<main class="mx-auto max-w-6xl px-6 pb-20">
+			<!-- Encabezado -->
+			<section class="flex flex-col gap-5 pb-12 pt-16 md:pt-[72px]">
+				<h1
+					class="m-0 max-w-[900px] text-[clamp(24px,3.8vw,48px)] font-bold leading-[1.08]"
+				>
+					¿Es el agua almacenada en un cuerpo de agua apta para el consumo
+					humano?
+				</h1>
+				<p class="m-0 max-w-[720px] text-[19px] leading-relaxed text-texto">
+					Investigación sobre los factores que afectan la potabilidad del agua
+				</p>
+
+				<div
+					class="mt-4 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
+				>
+					<div class="rounded-[10px] border border-linea bg-white p-5">
+						<p class="m-0 text-[13px] text-suave">Muestras analizadas</p>
+						<p class="m-0 mt-1.5 font-mono text-[34px] font-medium">3,276</p>
+					</div>
+					<div class="rounded-[10px] border border-linea bg-white p-5">
+						<p class="m-0 text-[13px] text-suave">Parámetros fisicoquímicos</p>
+						<p class="m-0 mt-1.5 font-mono text-[34px] font-medium">9</p>
+					</div>
+					<div class="rounded-[10px] border border-linea bg-white p-5">
+						<p class="m-0 text-[13px] text-suave">
+							Muestras de agua potable vs no potable
+						</p>
+						<p class="m-0 mt-1.5 font-mono text-[34px] font-medium text-agua">
+							39%
+						</p>
+						<div class="mt-2.5 h-2 overflow-hidden rounded bg-ocre-claro">
+							<div class="h-full w-[39%] bg-agua"></div>
+						</div>
+						<p class="m-0 mt-1.5 text-xs text-suave">
+							1,278 potables, 1,998 no potables
+						</p>
+					</div>
+				</div>
+				<div class="min-w-0 rounded-[10px] border border-linea bg-white p-6">
+					<p class="m-0 mt-1.5 text-xs text-suave">Parámetros evaluados</p>
+					<div id="diccionario" class="mt-1.5 grid grid-cols-9 gap-2.5"></div>
+				</div>
+			</section>
+
+			<div class="grid grid-cols-2 gap-4">
+				<!-- 02 Variables -->
+				<section
+					id="variables"
+					class="flex scroll-mt-4 flex-col gap-6 border-t border-linea py-12"
+				>
+					<div class="flex flex-wrap items-end justify-between gap-4">
+						<div class="flex max-w-[720px] flex-col gap-2">
+							<p class="m-0 font-mono text-[13px] text-agua">
+								Variables individuales
+							</p>
+							<h2 class="m-0 text-[30px] font-semibold leading-tight">
+								Ninguna variable decide sola
+							</h2>
+							<p class="m-0 text-base leading-relaxed text-texto">
+								Las distribuciones de agua potable y no potable se solapan casi
+								por completo en los nueve parámetros.
+							</p>
+						</div>
+						<div class="flex gap-5 text-[13px]">
+							<span class="flex items-center gap-2"
+								><span class="h-3.5 w-3.5 rounded-[3px] bg-agua"></span
+								>Potable</span
+							>
+							<span class="flex items-center gap-2"
+								><span class="h-3.5 w-3.5 rounded-[3px] bg-ocre"></span>No
+								potable</span
+							>
+						</div>
+					</div>
+					<div id="histogramas" class="grid grid-cols-3 gap-4"></div>
+				</section>
+
+				<!-- 03 Combinaciones -->
+				<section
+					id="combinaciones"
+					class="flex scroll-mt-4 flex-col gap-6 border-t border-linea py-12"
+				>
+					<div class="flex max-w-[760px] flex-col gap-2">
+						<p class="m-0 font-mono text-[13px] text-agua">Combinaciones</p>
+						<h2 class="m-0 text-[30px] font-semibold leading-tight">
+							Los conjuntos si deciden
+						</h2>
+                        <p class="m-0 text-base leading-relaxed text-texto">
+								Las variables en conjunto si tienen un efecto decisivo sobre la potabilidad del agua.
+							</p>
+					</div>
+						<div
+							class="min-w-0 flex-[1_1_520px] rounded-[10px]  bg-white p-6"
+						>
+							<div id="relaciones" class="flex scroll-mt-4 flex-col gap-6 ">
+                                <div class="flex  items-end justify-between gap-4">
+                                    <select id="variableMapa" class="min-h-[44px]  cursor-pointer rounded-md border border-[#B8C4CB] bg-white px-3 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-agua"></select>
+                                <div id="leyendaMapas" class="flex flex-wrap items-center gap-4"></div>
+                                </div>
+                                <p id="descripcionMapas" class="m-0 max-w-[760px] text-sm leading-relaxed text-texto"></p>
+                                <div id="panelMapas" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2"></div>
+                            </div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</main>
+
+		<footer class="border-t border-linea bg-white">
+			<div
+				class="mx-auto flex max-w-6xl flex-wrap justify-between gap-3 p-6 text-[13px] text-suave"
+			>
+				<span
+					>Fuente:
+					<a
+						class="text-agua underline hover:text-agua-oscuro"
+						href="https://www.kaggle.com/datasets/adityakadiwal/water-potability"
+						>Water Potability, Kaggle</a
+					></span
+				>
+			</div>
+		</footer>
+		<script type="module" src="graphifier.js"></script>
+		<script type="module" src="relationalmap.js"></script>
+		<script>
+			(function () {
+				// ---------- Datos base ----------
+				var PARAMS = [
+					{
+						k: "ph",
+						name: "pH",
+						unit: "",
+						min: 0,
+						max: 14,
+						step: 0.1,
+						def: 7.0,
+						d: 1,
+						lo: 6.5,
+						hi: 8.5,
+						ref: "6.5 – 8.5 (OMS)",
+					},
+					{
+						k: "hardness",
+						name: "Dureza",
+						unit: "mg/L",
+						min: 47,
+						max: 323,
+						step: 1,
+						def: 197,
+						d: 0,
+						lo: null,
+						hi: null,
+						ref: "Sin límite sanitario",
+					},
+					{
+						k: "solids",
+						name: "Sólidos disueltos",
+						unit: "ppm",
+						min: 320,
+						max: 61227,
+						step: 50,
+						def: 20928,
+						d: 0,
+						lo: null,
+						hi: 1000,
+						ref: "≤ 1,000 (OMS)",
+					},
+					{
+						k: "chloramines",
+						name: "Cloraminas",
+						unit: "ppm",
+						min: 0.4,
+						max: 13.1,
+						step: 0.1,
+						def: 7.1,
+						d: 1,
+						lo: null,
+						hi: 4,
+						ref: "≤ 4 (EPA)",
+					},
+					{
+						k: "sulfate",
+						name: "Sulfato",
+						unit: "mg/L",
+						min: 129,
+						max: 481,
+						step: 1,
+						def: 333,
+						d: 0,
+						lo: null,
+						hi: 250,
+						ref: "≤ 250 (EPA, secundario)",
+					},
+					{
+						k: "conductivity",
+						name: "Conductividad",
+						unit: "μS/cm",
+						min: 181,
+						max: 753,
+						step: 1,
+						def: 422,
+						d: 0,
+						lo: null,
+						hi: 400,
+						ref: "≤ 400 (OMS)",
+					},
+					{
+						k: "carbon",
+						name: "Carbono orgánico",
+						unit: "ppm",
+						min: 2.2,
+						max: 28.3,
+						step: 0.1,
+						def: 14.2,
+						d: 1,
+						lo: null,
+						hi: 2,
+						ref: "< 2 agua tratada (EPA)",
+					},
+					{
+						k: "thm",
+						name: "Trihalometanos",
+						unit: "μg/L",
+						min: 0.7,
+						max: 124,
+						step: 0.5,
+						def: 66.6,
+						d: 1,
+						lo: null,
+						hi: 80,
+						ref: "≤ 80 (EPA)",
+					},
+					{
+						k: "turbidity",
+						name: "Turbidez",
+						unit: "NTU",
+						min: 1.4,
+						max: 6.8,
+						step: 0.1,
+						def: 4.0,
+						d: 1,
+						lo: null,
+						hi: 5,
+						ref: "≤ 5 (OMS)",
+					},
+				];
+				var TOTAL = 3276;
+				var $ = function (id) {
+					return document.getElementById(id);
+				};
+				function rnd(seed) {
+					var x = Math.sin(seed * 12.9898) * 43758.5453;
+					return x - Math.floor(x);
+				}
+				// ---------- 01 Diccionario ----------
+				$("diccionario").innerHTML = PARAMS.map(function (p) {
+					return (
+						'<div class="rounded-lg border border-[#E4E9EC] px-3 py-2.5">' +
+						'<p class="m-0 text-sm font-medium">' +
+						p.name +
+						"</p>" +
+						'<p class="m-0 mt-0.5 font-mono text-xs text-suave">' +
+						(p.unit || "escala 0–14") +
+						"</p></div>"
+					);
+				}).join("");
+
+				// ---------- 02 Densidades ilustrativas ----------
+				function curva(mu, sd, amp) {
+					var d = "M0,80";
+					for (var i = 0; i <= 50; i++) {
+						var x = i * 4,
+							t = (x - mu) / sd;
+						d +=
+							" L" + x + "," + (80 - amp * Math.exp(-0.5 * t * t)).toFixed(1);
+					}
+					return d + " L200,80 Z";
+				}
+				$("densidades").innerHTML = PARAMS.map(function (p, i) {
+					var shift = ((i * 37) % 7) - 3;
+					var a = curva(100, 30 + (i % 3) * 4, 66);
+					var b = curva(
+						100 + shift,
+						31 + (i % 3) * 4 + (i === 0 ? 8 : 0),
+						62 - (i === 0 ? 10 : 0),
+					);
+					return (
+						'<div class="rounded-[10px] border border-linea bg-white p-4">' +
+						'<div class="flex items-baseline justify-between"><span class="text-sm font-medium">' +
+						p.name +
+						"</span>" +
+						'<span class="font-mono text-[11px] text-suave">' +
+						(p.unit || "pH") +
+						"</span></div>" +
+						'<svg viewBox="0 0 200 84" class="mt-2 block h-auto w-full" role="img" aria-label="Densidad ilustrativa de ' +
+						p.name +
+						' por clase">' +
+						'<path d="' +
+						a +
+						'" fill="#C8692B" fill-opacity="0.22" stroke="#C8692B" stroke-width="1.5"/>' +
+						'<path d="' +
+						b +
+						'" fill="#1F5C99" fill-opacity="0.22" stroke="#1F5C99" stroke-width="1.5"/>' +
+						'<line x1="0" y1="80.5" x2="200" y2="80.5" stroke="#B8C4CB" stroke-width="1"/></svg></div>'
+					);
+				}).join("");
+
+				// ---------- 03 Beeswarm SHAP ilustrativo ----------
+				var spread = [34, 30, 24, 20, 17, 14, 11, 9, 7];
+				$("enjambre").innerHTML = PARAMS.map(function (p, i) {
+					var dots = "";
+					for (var j = 0; j < 34; j++) {
+						var high = rnd(i * 300 + j + 3) > 0.5;
+						var dir = i % 2 === 0 ? (high ? 1 : -1) : high ? -1 : 1;
+						var x = 50 + dir * rnd(i * 100 + j + 1) * spread[i];
+						var y = 3 + rnd(i * 200 + j + 7) * 16;
+						dots +=
+							'<span class="absolute h-[7px] w-[7px] rounded-full opacity-75 ' +
+							(high ? "bg-ocre" : "bg-agua") +
+							'" style="left:' +
+							x.toFixed(1) +
+							"%;top:" +
+							y.toFixed(0) +
+							'px"></span>';
+					}
+					return (
+						'<div class="grid grid-cols-[130px_1fr] items-center gap-3">' +
+						'<span class="text-right text-[13px] text-texto">' +
+						p.name +
+						"</span>" +
+						'<div class="relative h-[26px] border-b border-dashed border-[#E4E9EC]">' +
+						'<div class="absolute bottom-0 left-1/2 top-0 w-px bg-[#B8C4CB]"></div>' +
+						dots +
+						"</div></div>"
+					);
+				}).join("");
+			})();
+		</script>
+	</body>
+</html>
