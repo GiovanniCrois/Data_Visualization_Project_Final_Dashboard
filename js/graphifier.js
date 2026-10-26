@@ -11,7 +11,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 // --------------------------------------------
 // Configuración
 // --------------------------------------------
-const RUTA_CSV = new URL("../water_potability.csv", import.meta.url).href;
+const RUTA_CSV = new URL("/data/water_potability.csv", import.meta.url).href;
 const NUM_INTERVALOS = 25;
 
 const COLORES = { potable: "#1F5C99", noPotable: "#C8692B" };
