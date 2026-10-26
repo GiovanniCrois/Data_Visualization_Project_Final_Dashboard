@@ -4,7 +4,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 // --------------------------------------------
 // Configuración
 // --------------------------------------------
-const RUTA_CSV = "../water_potability.csv";
+const RUTA_CSV = "water_potability.csv";
 const INTERVALOS_MAPA = 12; // celdas aproximadas por eje
 const INTERVALOS_HIST = 25; // intervalos del histograma
 const MIN_MUESTRAS = 5; // celdas con menos muestras: gris y fuera de la métrica
